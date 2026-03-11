@@ -1,6 +1,6 @@
 import db from '../../shared/config/database.js';
 import { faqs } from '../../db/schema.js';
-import { eq, count, and } from 'drizzle-orm';
+import { eq, count, and, or, ilike } from 'drizzle-orm';
 
 const createFaq = async (faqBody) => {
     const [faq] = await db.insert(faqs).values(faqBody).returning();
@@ -8,10 +8,15 @@ const createFaq = async (faqBody) => {
 };
 
 const getFaqs = async (options = {}) => {
-    const { limit = 10, offset = 0, isPublished } = options;
+    const limit = Number(options.limit) || 10;
+    const offset = Number(options.offset) || 0;
+    const { isPublished, search } = options;
     const whereConditions = [];
     if (typeof isPublished === 'boolean') {
         whereConditions.push(eq(faqs.isPublished, isPublished));
+    }
+    if (search) {
+        whereConditions.push(or(ilike(faqs.question, `%${search}%`), ilike(faqs.answer, `%${search}%`)));
     }
     const whereClause = whereConditions.length ? and(...whereConditions) : undefined;
 

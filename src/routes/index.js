@@ -9,6 +9,7 @@ import blogTagRoute from '../features/blogTag/blogTag.routes.js';
 import blogPostRoute from '../features/blogPost/blogPost.routes.js';
 import navigationItemRoute from '../features/navigationItem/navigationItem.routes.js';
 import contactMessageRoute from '../features/contactMessage/contactMessage.routes.js';
+import chatQuestionRoute from '../features/chatQuestion/chatQuestion.routes.js';
 
 const router = express.Router();
 
@@ -52,6 +53,10 @@ const defaultRoutes = [
     {
         path: '/contact-messages',
         route: contactMessageRoute,
+    },
+    {
+        path: '/chat-questions',
+        route: chatQuestionRoute,
     },
 ];
 

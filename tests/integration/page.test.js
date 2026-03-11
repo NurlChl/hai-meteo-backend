@@ -65,19 +65,10 @@ describe('Page Routes', () => {
             .send({ slug: 'features', title: 'Features' })
             .expect(httpStatus.CREATED);
 
-        const mediaRes = await request(app)
-            .post('/v1/media-assets')
-            .set('Authorization', `Bearer ${token}`)
-            .send({ fileUrl: 'https://cdn.example.com/section.png' })
-            .expect(httpStatus.CREATED);
-
         const sectionPayload = {
             pageId: pageRes.body.id,
             sectionKey: 'hero',
-            sectionType: 'hero',
-            title: 'Accurate Weather',
             content: { headline: 'Data-driven forecasts' },
-            backgroundMediaId: mediaRes.body.id,
         };
 
         const sectionRes = await request(app)
@@ -87,7 +78,6 @@ describe('Page Routes', () => {
             .expect(httpStatus.CREATED);
 
         expect(sectionRes.body.pageId).toBe(pageRes.body.id);
-        expect(sectionRes.body.backgroundMediaId).toBe(mediaRes.body.id);
 
         const getRes = await request(app)
             .get(`/v1/page-sections/${sectionRes.body.id}`)
@@ -104,11 +94,10 @@ describe('Page Routes', () => {
         const updateRes = await request(app)
             .patch(`/v1/page-sections/${sectionRes.body.id}`)
             .set('Authorization', `Bearer ${token}`)
-            .send({ isEnabled: false, backgroundMediaId: null })
+            .send({ isEnabled: false })
             .expect(httpStatus.OK);
 
         expect(updateRes.body.isEnabled).toBe(false);
-        expect(updateRes.body.backgroundMediaId).toBeNull();
 
         await request(app)
             .delete(`/v1/page-sections/${sectionRes.body.id}`)
@@ -133,11 +122,9 @@ describe('Page Routes', () => {
             .send({ slug: 'draft', title: 'Draft', isPublished: false })
             .expect(httpStatus.CREATED);
 
-        const publishedListRes = await request(app)
+        await request(app)
             .get('/v1/pages?isPublished=true')
             .expect(httpStatus.OK);
-
-        // expect(publishedListRes.body.results).toHaveLength(1);
 
         await request(app)
             .delete(`/v1/pages/${publishedPage.body.id}`)

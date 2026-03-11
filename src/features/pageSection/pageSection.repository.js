@@ -1,6 +1,6 @@
 import db from '../../shared/config/database.js';
 import { pageSections } from '../../db/schema.js';
-import { eq, count, and } from 'drizzle-orm';
+import { eq, count, and, asc } from 'drizzle-orm';
 
 const createPageSection = async (sectionBody) => {
     const [section] = await db.insert(pageSections).values(sectionBody).returning();
@@ -8,7 +8,9 @@ const createPageSection = async (sectionBody) => {
 };
 
 const getPageSections = async (options = {}) => {
-    const { limit = 10, offset = 0, pageId, isEnabled } = options;
+    const limit = Number(options.limit) || 10;
+    const offset = Number(options.offset) || 0;
+    const { pageId, isEnabled } = options;
     const whereConditions = [];
     if (pageId) {
         whereConditions.push(eq(pageSections.pageId, pageId));
@@ -24,7 +26,7 @@ const getPageSections = async (options = {}) => {
         listQuery = listQuery.where(whereClause);
         countQuery = countQuery.where(whereClause);
     }
-    const results = await listQuery.limit(limit).offset(offset);
+    const results = await listQuery.orderBy(asc(pageSections.sortOrder)).limit(limit).offset(offset);
     const [{ count: totalCount }] = await countQuery;
 
     return {

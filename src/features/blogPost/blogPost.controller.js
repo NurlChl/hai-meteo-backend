@@ -9,7 +9,7 @@ const createBlogPost = catchAsync(async (req, res) => {
 });
 
 const getBlogPosts = catchAsync(async (req, res) => {
-    const filter = pick(req.query, ['limit', 'offset', 'status']);
+    const filter = pick(req.query, ['limit', 'offset', 'status', 'search']);
     const result = await blogPostService.getBlogPosts(filter);
     res.send(result);
 });

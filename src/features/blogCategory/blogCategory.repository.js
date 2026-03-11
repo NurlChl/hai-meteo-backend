@@ -8,7 +8,9 @@ const createBlogCategory = async (categoryBody) => {
 };
 
 const getBlogCategories = async (options = {}) => {
-    const { limit = 10, offset = 0, search } = options;
+    const limit = Number(options.limit) || 10;
+    const offset = Number(options.offset) || 0;
+    const { search } = options;
 
     const whereConditions = [];
     if (search) {

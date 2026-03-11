@@ -9,7 +9,7 @@ const createFaq = catchAsync(async (req, res) => {
 });
 
 const getFaqs = catchAsync(async (req, res) => {
-    const filter = pick(req.query, ['limit', 'offset', 'isPublished']);
+    const filter = pick(req.query, ['limit', 'offset', 'isPublished', 'search']);
     const result = await faqService.getFaqs({
         ...filter,
         isPublished: typeof filter.isPublished === 'string' ? filter.isPublished === 'true' : filter.isPublished,

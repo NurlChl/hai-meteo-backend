@@ -40,6 +40,7 @@ const pages = pgTable('pages', {
     title: text('title'),
     metaTitle: text('meta_title'),
     metaDesc: text('meta_desc'),
+    metaImageId: bigint('meta_image_id', { mode: 'number' }).references(() => mediaAssets.id),
     isPublished: boolean('is_published').notNull().default(true),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
@@ -51,12 +52,8 @@ const pageSections = pgTable('page_sections', {
         .notNull()
         .references(() => pages.id, { onDelete: 'cascade' }),
     sectionKey: text('section_key').notNull(),
-    sectionType: text('section_type').notNull(),
     sortOrder: integer('sort_order').notNull().default(0),
-    title: text('title'),
-    subtitle: text('subtitle'),
     content: jsonb('content').notNull().default({}),
-    backgroundMediaId: bigint('background_media_id', { mode: 'number' }).references(() => mediaAssets.id),
     isEnabled: boolean('is_enabled').notNull().default(true),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
@@ -151,6 +148,15 @@ const contactMessages = pgTable('contact_messages', {
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 });
 
+const chatQuestions = pgTable('chat_questions', {
+    id: bigserial('id', { mode: 'number' }).primaryKey(),
+    question: text('question').notNull(),
+    sortOrder: integer('sort_order').notNull().default(0),
+    isEnabled: boolean('is_enabled').notNull().default(true),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
 export {
     adminUsers,
     mediaAssets,
@@ -164,5 +170,6 @@ export {
     blogPostTags,
     navigationItems,
     contactMessages,
+    chatQuestions,
     blogPostStatus,
 };

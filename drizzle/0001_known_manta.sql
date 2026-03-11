@@ -1,0 +1,2 @@
+ALTER TABLE "pages" ADD COLUMN "meta_image_id" bigint;--> statement-breakpoint
+ALTER TABLE "pages" ADD CONSTRAINT "pages_meta_image_id_media_assets_id_fk" FOREIGN KEY ("meta_image_id") REFERENCES "public"."media_assets"("id") ON DELETE no action ON UPDATE no action;

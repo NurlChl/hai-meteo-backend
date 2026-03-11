@@ -8,7 +8,8 @@ const createMediaAsset = async (mediaAssetBody) => {
 };
 
 const getMediaAssets = async (options = {}) => {
-    const { limit = 10, offset = 0 } = options;
+    const limit = Number(options.limit) || 10;
+    const offset = Number(options.offset) || 0;
     const results = await db.select().from(mediaAssets).limit(limit).offset(offset);
     const [{ count: totalCount }] = await db.select({ count: count() }).from(mediaAssets);
     return {

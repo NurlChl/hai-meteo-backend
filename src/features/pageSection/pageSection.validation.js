@@ -13,12 +13,8 @@ const createPageSection = {
     body: Joi.object().keys({
         pageId: Joi.number().integer().required(),
         sectionKey: Joi.string().required(),
-        sectionType: Joi.string().required(),
         sortOrder: Joi.number().integer().min(0).optional(),
-        title: Joi.string().optional(),
-        subtitle: Joi.string().optional(),
         content: Joi.object().unknown(true).optional(),
-        backgroundMediaId: Joi.number().integer().allow(null).optional(),
         isEnabled: Joi.boolean().optional(),
     }),
 };
@@ -37,12 +33,8 @@ const updatePageSection = {
         .keys({
             pageId: Joi.number().integer(),
             sectionKey: Joi.string(),
-            sectionType: Joi.string(),
             sortOrder: Joi.number().integer().min(0),
-            title: Joi.string().optional(),
-            subtitle: Joi.string().optional(),
             content: Joi.object().unknown(true).optional(),
-            backgroundMediaId: Joi.number().integer().allow(null).optional(),
             isEnabled: Joi.boolean().optional(),
         })
         .min(1),

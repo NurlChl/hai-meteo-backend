@@ -14,7 +14,7 @@ const options = {
         },
         servers: [
             {
-                url: 'http://localhost:3000',
+                url: `http://localhost:${process.env.PORT || 8000}`,
                 description: 'Development server',
             },
         ],
@@ -82,12 +82,8 @@ const options = {
                         id: { type: 'integer', example: 1 },
                         pageId: { type: 'integer', example: 1 },
                         sectionKey: { type: 'string', example: 'hero' },
-                        sectionType: { type: 'string', example: 'hero' },
                         sortOrder: { type: 'integer', example: 0 },
-                        title: { type: 'string', example: 'Accurate Weather' },
-                        subtitle: { type: 'string', example: 'Data-driven forecasts' },
                         content: { type: 'object', additionalProperties: true },
-                        backgroundMediaId: { type: 'integer', nullable: true, example: 1 },
                         isEnabled: { type: 'boolean', example: true },
                         createdAt: { type: 'string', format: 'date-time' },
                         updatedAt: { type: 'string', format: 'date-time' },

@@ -1,6 +1,6 @@
 import db from '../../shared/config/database.js';
 import { contactMessages } from '../../db/schema.js';
-import { eq, count, and } from 'drizzle-orm';
+import { eq, count, and, or, ilike } from 'drizzle-orm';
 
 const createContactMessage = async (messageBody) => {
     const [message] = await db.insert(contactMessages).values(messageBody).returning();
@@ -8,10 +8,20 @@ const createContactMessage = async (messageBody) => {
 };
 
 const getContactMessages = async (options = {}) => {
-    const { limit = 10, offset = 0, status } = options;
+    const limit = Number(options.limit) || 10;
+    const offset = Number(options.offset) || 0;
+    const { status, search } = options;
     const whereConditions = [];
     if (status) {
         whereConditions.push(eq(contactMessages.status, status));
+    }
+    if (search) {
+        whereConditions.push(or(
+            ilike(contactMessages.name, `%${search}%`),
+            ilike(contactMessages.email, `%${search}%`),
+            ilike(contactMessages.subject, `%${search}%`),
+            ilike(contactMessages.message, `%${search}%`)
+        ));
     }
     const whereClause = whereConditions.length ? and(...whereConditions) : undefined;
 

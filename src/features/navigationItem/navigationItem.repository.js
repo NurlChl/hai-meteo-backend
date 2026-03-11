@@ -8,7 +8,9 @@ const createNavigationItem = async (itemBody) => {
 };
 
 const getNavigationItems = async (options = {}) => {
-    const { limit = 10, offset = 0, location, isEnabled, search } = options;
+    const limit = Number(options.limit) || 10;
+    const offset = Number(options.offset) || 0;
+    const { location, isEnabled, search } = options;
     const whereConditions = [];
     if (location) {
         whereConditions.push(eq(navigationItems.location, location));

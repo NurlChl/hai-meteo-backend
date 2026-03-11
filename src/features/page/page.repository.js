@@ -8,7 +8,9 @@ const createPage = async (pageBody) => {
 };
 
 const getPages = async (options = {}) => {
-    const { limit = 10, offset = 0, slug, isPublished, search } = options;
+    const limit = Number(options.limit) || 10;
+    const offset = Number(options.offset) || 0;
+    const { slug, isPublished, search } = options;
     const whereConditions = [];
     if (slug) {
         whereConditions.push(eq(pages.slug, slug));

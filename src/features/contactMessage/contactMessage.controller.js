@@ -9,7 +9,7 @@ const createContactMessage = catchAsync(async (req, res) => {
 });
 
 const getContactMessages = catchAsync(async (req, res) => {
-    const filter = pick(req.query, ['limit', 'offset', 'status']);
+    const filter = pick(req.query, ['limit', 'offset', 'status', 'search']);
     const result = await contactMessageService.getContactMessages(filter);
     res.send(result);
 });

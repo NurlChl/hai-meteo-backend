@@ -2,9 +2,28 @@ import httpStatus from 'http-status';
 import catchAsync from '../../shared/utils/catchAsync.js';
 import * as mediaAssetService from './mediaAsset.service.js';
 import pick from '../../shared/utils/pick.js';
+import config from '../../shared/config/index.js';
 
 const createMediaAsset = catchAsync(async (req, res) => {
     const mediaAsset = await mediaAssetService.createMediaAsset(req.body);
+    res.status(httpStatus.CREATED).send(mediaAsset);
+});
+
+const uploadMediaAsset = catchAsync(async (req, res) => {
+    const file = req.file;
+    const { altText, width, height } = req.body;
+
+    const fileUrl = `${config.baseUrl}/uploads/${file.filename}`;
+
+    const mediaAssetBody = {
+        fileUrl,
+        altText: altText || file.originalname,
+        mimeType: file.mimetype,
+        width: width ? parseInt(width, 10) : null,
+        height: height ? parseInt(height, 10) : null,
+    };
+
+    const mediaAsset = await mediaAssetService.createMediaAsset(mediaAssetBody);
     res.status(httpStatus.CREATED).send(mediaAsset);
 });
 
@@ -31,6 +50,7 @@ const deleteMediaAsset = catchAsync(async (req, res) => {
 
 export {
     createMediaAsset,
+    uploadMediaAsset,
     getMediaAssets,
     getMediaAsset,
     updateMediaAsset,

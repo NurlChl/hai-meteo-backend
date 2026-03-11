@@ -14,13 +14,8 @@ const mockPageService = {
     getPageById: jest.fn(),
 };
 
-const mockMediaAssetService = {
-    getMediaAssetById: jest.fn(),
-};
-
 jest.unstable_mockModule('../../src/features/pageSection/pageSection.repository.js', () => mockPageSectionRepository);
 jest.unstable_mockModule('../../src/features/page/page.service.js', () => mockPageService);
-jest.unstable_mockModule('../../src/features/mediaAsset/mediaAsset.service.js', () => mockMediaAssetService);
 
 const pageSectionService = await import('../../src/features/pageSection/pageSection.service.js');
 
@@ -29,60 +24,51 @@ describe('Page Section Service', () => {
         jest.clearAllMocks();
     });
 
-    test('should create a page section and validate references', async () => {
+    test('should create a page section and validate page reference', async () => {
         mockPageService.getPageById.mockResolvedValue({ id: 1 });
-        mockMediaAssetService.getMediaAssetById.mockResolvedValue({ id: 2 });
         mockPageSectionRepository.createPageSection.mockResolvedValue({ id: 10 });
 
         await pageSectionService.createPageSection({
             pageId: 1,
             sectionKey: 'hero',
-            sectionType: 'hero',
-            backgroundMediaId: 2,
+            content: { heading: 'Hello' },
         });
 
         expect(mockPageService.getPageById).toHaveBeenCalledWith(1);
-        expect(mockMediaAssetService.getMediaAssetById).toHaveBeenCalledWith(2);
         expect(mockPageSectionRepository.createPageSection).toHaveBeenCalled();
     });
 
-    test('should create a page section without background media', async () => {
+    test('should create a page section without optional content', async () => {
         mockPageService.getPageById.mockResolvedValue({ id: 1 });
         mockPageSectionRepository.createPageSection.mockResolvedValue({ id: 11 });
 
         await pageSectionService.createPageSection({
             pageId: 1,
             sectionKey: 'intro',
-            sectionType: 'intro',
         });
 
-        expect(mockMediaAssetService.getMediaAssetById).not.toHaveBeenCalled();
         expect(mockPageSectionRepository.createPageSection).toHaveBeenCalled();
     });
 
-    test('should update a page section without calling media asset for null', async () => {
+    test('should update a page section', async () => {
         mockPageSectionRepository.getPageSectionById.mockResolvedValue({ id: 10 });
-        mockPageSectionRepository.updatePageSectionById.mockResolvedValue({ id: 10, backgroundMediaId: null });
+        mockPageSectionRepository.updatePageSectionById.mockResolvedValue({ id: 10, sortOrder: 3 });
 
-        await pageSectionService.updatePageSectionById(10, { backgroundMediaId: null });
+        await pageSectionService.updatePageSectionById(10, { sortOrder: 3 });
 
-        expect(mockMediaAssetService.getMediaAssetById).not.toHaveBeenCalled();
-        expect(mockPageSectionRepository.updatePageSectionById).toHaveBeenCalledWith(10, { backgroundMediaId: null });
+        expect(mockPageSectionRepository.updatePageSectionById).toHaveBeenCalledWith(10, { sortOrder: 3 });
     });
 
-    test('should update a page section with page and background media validation', async () => {
+    test('should update a page section with page validation', async () => {
         mockPageSectionRepository.getPageSectionById.mockResolvedValue({ id: 12 });
-        mockPageSectionRepository.updatePageSectionById.mockResolvedValue({ id: 12, pageId: 2, backgroundMediaId: 3 });
+        mockPageSectionRepository.updatePageSectionById.mockResolvedValue({ id: 12, pageId: 2 });
         mockPageService.getPageById.mockResolvedValue({ id: 2 });
-        mockMediaAssetService.getMediaAssetById.mockResolvedValue({ id: 3 });
 
-        await pageSectionService.updatePageSectionById(12, { pageId: 2, backgroundMediaId: 3 });
+        await pageSectionService.updatePageSectionById(12, { pageId: 2 });
 
         expect(mockPageService.getPageById).toHaveBeenCalledWith(2);
-        expect(mockMediaAssetService.getMediaAssetById).toHaveBeenCalledWith(3);
         expect(mockPageSectionRepository.updatePageSectionById).toHaveBeenCalledWith(12, {
             pageId: 2,
-            backgroundMediaId: 3,
         });
     });
 

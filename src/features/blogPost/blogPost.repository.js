@@ -1,6 +1,6 @@
 import db from '../../shared/config/database.js';
 import { blogPosts, blogPostCategories, blogPostTags } from '../../db/schema.js';
-import { eq, count, and } from 'drizzle-orm';
+import { eq, count, and, or, ilike } from 'drizzle-orm';
 
 const createBlogPost = async (postBody) => {
     const [post] = await db.insert(blogPosts).values(postBody).returning();
@@ -8,10 +8,15 @@ const createBlogPost = async (postBody) => {
 };
 
 const getBlogPosts = async (options = {}) => {
-    const { limit = 10, offset = 0, status } = options;
+    const limit = Number(options.limit) || 10;
+    const offset = Number(options.offset) || 0;
+    const { status, search } = options;
     const whereConditions = [];
     if (status) {
         whereConditions.push(eq(blogPosts.status, status));
+    }
+    if (search) {
+        whereConditions.push(or(ilike(blogPosts.title, `%${search}%`), ilike(blogPosts.slug, `%${search}%`)));
     }
     const whereClause = whereConditions.length ? and(...whereConditions) : undefined;
 

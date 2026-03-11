@@ -16,6 +16,7 @@ const createPage = {
         title: Joi.string().optional(),
         metaTitle: Joi.string().optional(),
         metaDesc: Joi.string().optional(),
+        metaImageId: Joi.number().integer().optional(),
         isPublished: Joi.boolean().optional(),
     }),
 };
@@ -42,6 +43,7 @@ const updatePage = {
             title: Joi.string().optional(),
             metaTitle: Joi.string().optional(),
             metaDesc: Joi.string().optional(),
+            metaImageId: Joi.number().integer().optional(),
             isPublished: Joi.boolean().optional(),
         })
         .min(1),

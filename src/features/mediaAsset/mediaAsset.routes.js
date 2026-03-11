@@ -3,6 +3,7 @@ import validate from '../../shared/middlewares/validate.js';
 import * as mediaAssetValidation from './mediaAsset.validation.js';
 import * as mediaAssetController from './mediaAsset.controller.js';
 import auth from '../../shared/middlewares/authMiddleware.js';
+import { upload } from '../../shared/config/upload.js';
 
 const router = express.Router();
 
@@ -99,6 +100,8 @@ router
     .route('/')
     .post(auth(), validate(mediaAssetValidation.createMediaAsset), mediaAssetController.createMediaAsset)
     .get(validate(mediaAssetValidation.getMediaAssets), mediaAssetController.getMediaAssets);
+
+router.post('/upload', auth(), upload.single('file'), mediaAssetController.uploadMediaAsset);
 
 /**
  * @swagger

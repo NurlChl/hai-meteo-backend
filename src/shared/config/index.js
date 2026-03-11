@@ -8,6 +8,7 @@ const envVarsSchema = Joi.object({
     JWT_SECRET: Joi.string().min(32).required().description('JWT secret key (min 32 characters)'),
     JWT_ACCESS_EXPIRATION_MINUTES: Joi.number().default(30).description('Access token expiration in minutes'),
     JWT_REFRESH_EXPIRATION_DAYS: Joi.number().default(30).description('Refresh token expiration in days'),
+    BASE_URL: Joi.string().default('http://localhost:3000').description('Base URL for the API'),
 }).unknown();
 
 const { value: envVars, error } = envVarsSchema.validate(process.env);
@@ -19,6 +20,7 @@ if (error) {
 export default {
     env: envVars.NODE_ENV,
     port: envVars.PORT,
+    baseUrl: envVars.BASE_URL,
     database: {
         url: envVars.DATABASE_URL,
     },

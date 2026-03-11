@@ -30,7 +30,6 @@ const router = express.Router();
  *             required:
  *               - pageId
  *               - sectionKey
- *               - sectionType
  *             properties:
  *               pageId:
  *                 type: integer
@@ -38,22 +37,12 @@ const router = express.Router();
  *               sectionKey:
  *                 type: string
  *                 example: hero
- *               sectionType:
- *                 type: string
- *                 example: hero
  *               sortOrder:
  *                 type: integer
  *                 minimum: 0
- *               title:
- *                 type: string
- *               subtitle:
- *                 type: string
  *               content:
  *                 type: object
  *                 additionalProperties: true
- *               backgroundMediaId:
- *                 type: integer
- *                 nullable: true
  *               isEnabled:
  *                 type: boolean
  *     responses:
@@ -66,7 +55,7 @@ const router = express.Router();
  *       401:
  *         description: Unauthorized
  *       404:
- *         description: Page or media asset not found
+ *         description: Page not found
  *   get:
  *     summary: Get all page sections
  *     tags: [PageSections]
@@ -168,21 +157,12 @@ router
  *                 type: integer
  *               sectionKey:
  *                 type: string
- *               sectionType:
- *                 type: string
  *               sortOrder:
  *                 type: integer
  *                 minimum: 0
- *               title:
- *                 type: string
- *               subtitle:
- *                 type: string
  *               content:
  *                 type: object
  *                 additionalProperties: true
- *               backgroundMediaId:
- *                 type: integer
- *                 nullable: true
  *               isEnabled:
  *                 type: boolean
  *     responses:

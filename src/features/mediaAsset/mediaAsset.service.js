@@ -1,13 +1,30 @@
 import httpStatus from 'http-status';
 import * as mediaAssetRepository from './mediaAsset.repository.js';
 import ApiError from '../../shared/utils/ApiError.js';
+import { resolveStoredFileUrl } from '../../shared/config/storage.js';
 
-const createMediaAsset = (mediaAssetBody) => {
-    return mediaAssetRepository.createMediaAsset(mediaAssetBody);
+const serializeMediaAsset = async (mediaAsset) => {
+    if (!mediaAsset) {
+        return mediaAsset;
+    }
+
+    return {
+        ...mediaAsset,
+        fileUrl: await resolveStoredFileUrl(mediaAsset.fileUrl),
+    };
 };
 
-const getMediaAssets = (filter) => {
-    return mediaAssetRepository.getMediaAssets(filter);
+const createMediaAsset = async (mediaAssetBody) => {
+    const mediaAsset = await mediaAssetRepository.createMediaAsset(mediaAssetBody);
+    return serializeMediaAsset(mediaAsset);
+};
+
+const getMediaAssets = async (filter) => {
+    const result = await mediaAssetRepository.getMediaAssets(filter);
+    return {
+        ...result,
+        results: await Promise.all(result.results.map(serializeMediaAsset)),
+    };
 };
 
 const getMediaAssetById = async (id) => {
@@ -15,12 +32,13 @@ const getMediaAssetById = async (id) => {
     if (!mediaAsset) {
         throw new ApiError(httpStatus.NOT_FOUND, 'Media asset not found');
     }
-    return mediaAsset;
+    return serializeMediaAsset(mediaAsset);
 };
 
 const updateMediaAssetById = async (id, updateBody) => {
     await getMediaAssetById(id);
-    return mediaAssetRepository.updateMediaAssetById(id, updateBody);
+    const mediaAsset = await mediaAssetRepository.updateMediaAssetById(id, updateBody);
+    return serializeMediaAsset(mediaAsset);
 };
 
 const deleteMediaAssetById = async (id) => {

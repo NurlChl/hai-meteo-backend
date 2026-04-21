@@ -55,7 +55,11 @@ const options = {
                     type: 'object',
                     properties: {
                         id: { type: 'integer', example: 1 },
-                        fileUrl: { type: 'string', example: 'https://cdn.example.com/banner.png' },
+                        fileUrl: {
+                            type: 'string',
+                            example: 'https://storage.googleapis.com/assets-bucket/media-assets/2024/04/banner.png?X-Goog-Algorithm=GOOG4-RSA-SHA256',
+                            description: 'Signed read URL generated at response time.',
+                        },
                         altText: { type: 'string', example: 'Banner image' },
                         mimeType: { type: 'string', example: 'image/png' },
                         width: { type: 'integer', example: 1920 },

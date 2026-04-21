@@ -25,6 +25,7 @@ const pageSectionRepository = await import('../../src/features/pageSection/pageS
 const setupListCountMocks = ({ results = [], totalCount = 0 } = {}) => {
     const listQuery = {
         where: jest.fn(() => listQuery),
+        orderBy: jest.fn(() => listQuery),
         limit: jest.fn(() => ({
             offset: jest.fn(() => results),
         })),

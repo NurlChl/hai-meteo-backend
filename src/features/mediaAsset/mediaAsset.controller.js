@@ -2,7 +2,8 @@ import httpStatus from 'http-status';
 import catchAsync from '../../shared/utils/catchAsync.js';
 import * as mediaAssetService from './mediaAsset.service.js';
 import pick from '../../shared/utils/pick.js';
-import config from '../../shared/config/index.js';
+import ApiError from '../../shared/utils/ApiError.js';
+import { buildStorageObjectKey, uploadBufferToGcs } from '../../shared/config/storage.js';
 
 const createMediaAsset = catchAsync(async (req, res) => {
     const mediaAsset = await mediaAssetService.createMediaAsset(req.body);
@@ -11,12 +12,17 @@ const createMediaAsset = catchAsync(async (req, res) => {
 
 const uploadMediaAsset = catchAsync(async (req, res) => {
     const file = req.file;
-    const { altText, width, height } = req.body;
 
-    const fileUrl = `${config.baseUrl}/uploads/${file.filename}`;
+    if (!file) {
+        throw new ApiError(httpStatus.BAD_REQUEST, 'File is required');
+    }
+
+    const { altText, width, height } = req.body;
+    const objectKey = buildStorageObjectKey(file);
+    const uploadResult = await uploadBufferToGcs({ file, objectKey });
 
     const mediaAssetBody = {
-        fileUrl,
+        fileUrl: uploadResult.fileUrl || objectKey,
         altText: altText || file.originalname,
         mimeType: file.mimetype,
         width: width ? parseInt(width, 10) : null,

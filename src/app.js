@@ -8,8 +8,11 @@ import { generalLimiter } from './shared/middlewares/rateLimiter.js';
 import routes from './routes/index.js';
 import ApiError from './shared/utils/ApiError.js';
 import setupSwagger from './shared/config/swagger.js';
+import config from './shared/config/index.js';
 
 const app = express();
+
+app.set('trust proxy', config.proxy.trust);
 
 app.use(helmet({
     crossOriginResourcePolicy: { policy: 'cross-origin' },

@@ -9,6 +9,8 @@ const envVarsSchema = Joi.object({
     JWT_ACCESS_EXPIRATION_MINUTES: Joi.number().default(30).description('Access token expiration in minutes'),
     JWT_REFRESH_EXPIRATION_DAYS: Joi.number().default(30).description('Refresh token expiration in days'),
     BASE_URL: Joi.string().default('http://localhost:3000').description('Base URL for the API'),
+    TRUST_PROXY: Joi.number().integer().min(0).default(1)
+        .description('Number of reverse proxies/load balancers between the client and API'),
     GCS_BUCKET_NAME: Joi.when('NODE_ENV', {
         is: 'test',
         then: Joi.string().optional(),
@@ -39,6 +41,9 @@ export default {
     env: envVars.NODE_ENV,
     port: envVars.PORT,
     baseUrl: envVars.BASE_URL,
+    proxy: {
+        trust: envVars.TRUST_PROXY,
+    },
     database: {
         url: envVars.DATABASE_URL,
     },

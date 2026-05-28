@@ -1,6 +1,6 @@
 import db from '../../shared/config/database.js';
 import { blogPosts, blogPostCategories, blogPostTags } from '../../db/schema.js';
-import { eq, count, and, or, ilike } from 'drizzle-orm';
+import { eq, count, and, or, ilike, desc } from 'drizzle-orm';
 
 const createBlogPost = async (postBody) => {
     const [post] = await db.insert(blogPosts).values(postBody).returning();
@@ -26,7 +26,10 @@ const getBlogPosts = async (options = {}) => {
         listQuery = listQuery.where(whereClause);
         countQuery = countQuery.where(whereClause);
     }
-    const results = await listQuery.limit(limit).offset(offset);
+    const results = await listQuery
+        .orderBy(desc(blogPosts.publishedAt), desc(blogPosts.createdAt))
+        .limit(limit)
+        .offset(offset);
     const [{ count: totalCount }] = await countQuery;
 
     return {

@@ -12,6 +12,7 @@ const createContactMessage = {
     body: Joi.object().keys({
         name: Joi.string().required(),
         email: Joi.string().email().required(),
+        phone: Joi.string().optional().allow(''),
         company: Joi.string().optional(),
         subject: Joi.string().optional(),
         message: Joi.string().required(),

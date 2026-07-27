@@ -37,6 +37,9 @@ const router = express.Router();
  *                 type: string
  *                 format: email
  *                 example: alex@example.com
+ *               phone:
+ *                 type: string
+ *                 example: '+62 851 0000 0000'
  *               company:
  *                 type: string
  *                 example: Meteo Inc.
